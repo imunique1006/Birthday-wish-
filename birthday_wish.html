@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJECT: LBSNAA - BIRTHDAY EDITION 🎂</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Cinzel:wght@600&family=Poppins:wght@300;400;600&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            background-color: #020205; 
+            color: #e0e0e0; 
+            font-family: 'Poppins', sans-serif; 
+            overflow-x: hidden; 
+            min-height: 100vh;
+        }
+
+        /* --- BACKGROUND --- */
+        .stars {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #1a0b2e 0%, #000 90%);
+            z-index: -2;
+        }
+        .grid-lines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            transform: perspective(500px) rotateX(20deg);
+        }
+
+        /* --- BALLOONS (UPDATED) --- */
+   .balloon {
+    position: fixed;    /* <-- Ye naya change hai */
+    bottom: -150px;
+    width: 45px; height: 55px;
+    border-radius: 50%;
+    opacity: 0.9;
+    animation: floatBalloon linear infinite;
+    z-index: 1;         /* <-- Taaki ye background mein rahe */
+}
+        .balloon::before {
+            content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%);
+            width: 2px; height: 15px; background: rgba(255,255,255,0.7);
+        }
+        
+        .b-gold { background: radial-gradient(circle at 30% 30%, #ffd700, #b8860b); box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3); }
+        .b-silver { background: radial-gradient(circle at 30% 30%, #fff, #a9a9a9); box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3); }
+        .b-blue { background: radial-gradient(circle at 30% 30%, #00ffff, #005555); box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3); }
+
+        @keyframes floatBalloon {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(-130vh) rotate(20deg); opacity: 0.8; }
+        }
+
+        /* --- GLOWING PARTICLES (UPDATED: More Opacity) --- */
+        .glowing-particle {
+            position: absolute;
+            background: radial-gradient(circle, #ffd700, #ff8c00); /* Thoda orange mix kiya glow ke liye */
+            border-radius: 50%;
+            /*pointer-events: none;*/
+            opacity: 0.9;
+            box-shadow: 0 0 10px #ffd700; /* Glow effect add kiya */
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0); opacity: 0; }
+            20% { opacity: 1; } /* Jaldi dikhai denge */
+            80% { opacity: 1; } /* Der tak tikenge */
+            100% { transform: translateY(-150px) scale(1.5); opacity: 0; }
+        }
+
+        /* --- STAGE 1: LOCK SCREEN --- */
+        #lock-screen {
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            text-align: center; z-index: 100; position: relative;
+            background: #000; transition: opacity 1s;
+        }
+
+        .reactor-ring {
+            width: 200px; height: 200px; border-radius: 50%;
+            border: 2px solid rgba(0, 255, 255, 0.1);
+            position: relative; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+            cursor: pointer;
+        }
+        
+        .reactor-core {
+            width: 100px; height: 100px; background: radial-gradient(#fff, #0ff, #004444);
+            border-radius: 50%; opacity: 0.3; transition: all 0.1s;
+            box-shadow: 0 0 10px #0ff;
+        }
+        
+        .spin-border {
+            position: absolute; width: 100%; height: 100%; border-radius: 50%;
+            border: 4px solid transparent; border-top-color: #0ff; border-bottom-color: #0ff;
+            animation: spin 4s linear infinite;
+        }
+
+        .hold-msg { margin-top: 30px; font-family: 'Orbitron'; letter-spacing: 2px; color: #0ff; animation: blink 1.5s infinite; }
+
+        /* --- STAGE 2: DASHBOARD --- */
+        #dashboard {
+            display: none; padding: 20px; max-width: 700px; margin: 0 auto;
+            opacity: 0; transform: translateY(50px); transition: all 1s;
+            position: relative; overflow: hidden;
+        }
+
+        .header {
+            text-align: center; margin: 40px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+            padding-bottom: 20px;
+            position: relative;
+        }
+
+        .decor-icon { font-size: 2rem; animation: bounce 2s infinite; display: inline-block; }
+        
+        h1 { 
+            font-family: 'Cinzel', serif; font-size: 2.8rem; 
+            background: linear-gradient(to right, #ffd700, #ff8c00);
+            -webkit-background-clip: text; color: transparent;
+            text-shadow: 0 0 15px rgba(255, 140, 0, 0.4);
+            margin-bottom: 5px;
+        }
+        .subtitle { font-family: 'Orbitron'; color: #0ff; font-size: 0.9rem; letter-spacing: 2px; }
+
+        /* EMBLEM */
+        .emblem-section {
+            display: flex; justify-content: center; margin-bottom: 40px; position: relative;
+        }
+        .emblem-container {
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #333, #000);
+            border: 4px double #ffd700;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
+            position: relative;
+            animation: float 4s ease-in-out infinite;
+            z-index: 10;
+        }
+        .emblem-ring {
+            position: absolute; width: 110%; height: 110%;
+            border: 2px dashed rgba(255, 215, 0, 0.4);
+            border-radius: 50%;
+            animation: spin 20s linear infinite;
+        }
+        .emblem-text-main {
+            font-family: 'Cinzel', serif; font-size: 3.5rem; color: #ffd700; font-weight: bold;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            line-height: 1;
+        }
+        .emblem-text-sub {
+            font-family: 'Orbitron', sans-serif; font-size: 0.7rem; color: #fff; letter-spacing: 3px;
+            margin-top: 5px;
+        }
+
+        /* CARDS */
+        .data-card {
+            background: rgba(13, 13, 16, 0.85); /* Thoda darker taaki particles clear dikhe */
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 15px; padding: 25px; margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+            position: relative; overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+        .data-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: #ffd700;
+        }
+
+        .card-title { font-family: 'Orbitron'; color: #ffd700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .long-text { font-size: 1rem; line-height: 1.8; color: #ccc; text-align: justify; }
+        .highlight { color: #0ff; font-weight: bold; }
+        .gold-text { color: #ffd700; font-weight: bold; font-style: italic; }
+
+        /* BUTTON */
+        .mission-control {
+            text-align: center; margin-top: 50px; padding-bottom: 100px;
+            position: relative; height: 150px; z-index: 20;
+        }
+        #partyBtn {
+            padding: 15px 40px; font-size: 1.1rem; font-weight: bold;
+            background: #ff0055; color: white; border: none; border-radius: 50px;
+            cursor: pointer; box-shadow: 0 0 20px #ff0055;
+            font-family: 'Orbitron'; letter-spacing: 1px;
+            transition: all 0.2s; position: absolute; left: 50%; transform: translateX(-50%);
+        }
+
+        /* POPUP */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 1000;
+            justify-content: center; align-items: center; flex-direction: column;
+            text-align: center; padding: 20px;
+        }
+        .modal-content {
+            border: 2px solid #ffd700; padding: 40px; border-radius: 20px;
+            background: linear-gradient(135deg, #1a0b2e, #000);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.4);
+            animation: zoomIn 0.5s ease;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes blink { 50% { opacity: 0.5; } }
+        @keyframes zoomIn { from { transform: scale(0); } to { transform: scale(1); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        
+        .confetti { position: absolute; width: 8px; height: 8px; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+
+    </style>
+</head>
+<body>
+
+    <div class="stars"></div>
+    <div class="grid-lines"></div>
+
+    <div id="lock-screen">
+        <div class="reactor-ring" id="reactor" onmousedown="startCharge()" onmouseup="stopCharge()" ontouchstart="startCharge()" ontouchend="stopCharge()">
+            <div class="spin-border"></div>
+            <div class="reactor-core" id="core"></div>
+        </div>
+        <div class="hold-msg" id="statusText">HOLD TO AUTHENTICATE</div>
+        <div style="margin-top: 15px; width: 200px; height: 6px; background: #333; border-radius: 3px; overflow: hidden;">
+            <div id="loader" style="width: 0%; height: 100%; background: #0ff; box-shadow: 0 0 10px #0ff;"></div>
+        </div>
+    </div>
+
+    <div id="dashboard">
+        <div class="header">
+            <h1><span class="decor-icon">🎉</span> HAPPY BIRTHDAY <span class="decor-icon">🎂</span></h1>
+            <div class="subtitle">TARGET: LBSNAA | STATUS: UNSTOPPABLE</div>
+        </div>
+
+        <div class="emblem-section">
+            <div class="emblem-container">
+                <div class="emblem-ring"></div>
+                <div class="emblem-text-main">IAS</div>
+                <div class="emblem-text-sub">OFFICER</div>
+            </div>
+        </div>
+
+        <div class="data-card">
+            <div class="card-title">🚀 MISSION STATEMENT</div>
+            <p class="long-text" style="font-size: 1.2rem; text-align: center;">
+                "Mujhe <span class="gold-text">Lal Batti</span> wali gaddi mein ghumna hai,<br>
+                Tujhe kaise bhi karke wahan pahuchna hai." 🚨
+            </p>
+        </div>
+
+        <div class="data-card">
+            <div class="card-title">📝 FROM THE BROTHERHOOD</div>
+            <p class="long-text">
+                Bhai, yeh saal tere liye sirf ek number nahi, ek <span class="highlight">Level Up</span> hai. 
+                <br><br>
+                Civil Services ki taiyari aasaan nahi hai, par main jaanta hoon ki tere andar wo aag hai. 
+                Jab tu library mein ghanton baithta hai, jab tu parties sacrifice karta hai—wo sab count ho raha hai.
+                <br><br>
+                Yaad rakhna, tu akela nahi hai. Tera bhai hamesha tere saath khada hai. 
+                Jis din tu <span class="gold-text">LBSNAA</span> ke gate se andar jayega, sabse zyada shor main machaunga!
+            </p>
+        </div>
+
+        <div class="data-card" style="border-left: 4px solid #ff8c00;">
+            <div class="card-title">🙏 DIVINE PROTECTION</div>
+            <p class="long-text">
+                <span class="gold-text">"Karmanye Vadhikaraste Ma Phaleshu Kadachana"</span>
+                <br><br>
+                Krishna Bhagwan tere 'Saarthi' banein. Unki kripa se tera har answer sahi ho, aur har interview mein tu chamke.
+                Stay conscious, stay blessed. Hare Krishna! 🦚
+            </p>
+        </div>
+
+        <div class="mission-control" id="btnArea">
+            <p style="color: #666; font-size: 0.8rem; margin-bottom: 20px;">SYSTEM REQUIRES CELEBRATION PROTOCOL</p>
+            <button id="partyBtn" onclick="tryClick()">PARTY KAB DEGA? 🍕</button>
+        </div>
+
+    </div>
+
+    <div class="modal" id="popup">
+        <div class="modal-content">
+            <h1 style="font-size: 3rem;">🎉 HARIII BOL! 🎉</h1>
+            <p style="color: #fff; font-size: 1.2rem; margin: 20px 0;">
+                Maan gaye prabhuuuu! Teri determination solid hai. <br>
+                Party ka intezaar rahega! 🥳
+            </p>
+            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin-top: 20px;">
+                <p class="gold-text" style="font-size: 1.5rem;">Happy Birthday Future Collector Sahab! 🇮🇳</p>
+            </div>
+            <br>
+            <button onclick="location.reload()" style="background: #ffd700; border: none; padding: 10px 30px; border-radius: 20px; font-weight: bold; cursor: pointer;">Replay ↺</button>
+        </div>
+    </div>
+
+    <script>
+        // --- CHARGING LOGIC ---
+        let power = 0;
+        let timer;
+        const reactor = document.getElementById('reactor');
+        const core = document.getElementById('core');
+        const loader = document.getElementById('loader');
+        const statusText = document.getElementById('statusText');
+        const lockScreen = document.getElementById('lock-screen');
+        const dashboard = document.getElementById('dashboard');
+
+        function startCharge() {
+            statusText.innerText = "AUTHENTICATING...";
+            statusText.style.color = "#0ff";
+            
+            timer = setInterval(() => {
+                if(power >= 100) {
+                    clearInterval(timer);
+                    unlockSystem();
+                } else {
+                    power += 2;
+                    loader.style.width = power + "%";
+                    let intensity = power / 100;
+                    core.style.opacity = 0.3 + intensity;
+                    core.style.boxShadow = `0 0 ${20 + (power/2)}px #0ff`;
+                    reactor.style.transform = `translate(${Math.random()*2}px, ${Math.random()*2}px)`;
+                }
+            }, 30);
+        }
+
+        function stopCharge() {
+            clearInterval(timer);
+            if(power < 100) {
+                power = 0;
+                loader.style.width = "0%";
+                statusText.innerText = "ACCESS DENIED. HOLD TO RETRY";
+                statusText.style.color = "#ff0055";
+                reactor.style.transform = "translate(0,0)";
+                core.style.opacity = 0.3;
+            }
+        }
+
+        function unlockSystem() {
+            statusText.innerText = "ACCESS GRANTED 🔓";
+            statusText.style.color = "#0f0";
+            reactor.style.transform = "scale(10)";
+            reactor.style.opacity = 0;
+            
+            setTimeout(() => {
+                lockScreen.style.display = 'none';
+                dashboard.style.display = 'block';
+                setTimeout(() => {
+                    dashboard.style.opacity = 1;
+                    dashboard.style.transform = "translateY(0)";
+                    startParticles();
+                    createBalloons(); // Balloons start here
+                }, 100);
+            }, 600);
+        }
+
+        // --- GLOWING PARTICLES LOGIC (Increased Quantity & Opacity) ---
+        function startParticles() {
+            const dashboardDiv = document.getElementById('dashboard');
+            // Quantity 20 se badhakar 60 kar di
+            for(let i=0; i<60; i++) {
+                const p = document.createElement('div');
+                p.classList.add('glowing-particle');
+                const size = Math.random() * 8 + 3; // Thoda bada size
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.top = Math.random() * 100 + '%';
+                p.style.animationDuration = (Math.random() * 4 + 3) + 's';
+                p.style.animationDelay = Math.random() * 5 + 's';
+                dashboardDiv.appendChild(p);
+            }
+        }
+
+        // --- BALLOON LOGIC (Auto Generated) ---
+        function createBalloons() {
+            const dashboardDiv = document.getElementById('dashboard');
+            const colors = ['b-gold', 'b-silver', 'b-blue'];
+            
+            // 15 Balloons generate honge
+            for(let i=0; i<15; i++) {
+                const b = document.createElement('div');
+                b.classList.add('balloon');
+                b.classList.add(colors[Math.floor(Math.random() * colors.length)]);
+                
+                b.style.left = (Math.random() * 90 + 5) + '%'; // Screen ke width mein failenge
+                b.style.animationDuration = (Math.random() * 5 + 5) + 's'; // Alag alag speed
+                b.style.animationDelay = (Math.random() * 5) + 's'; // Alag alag time par aayenge
+                
+                document.body.appendChild(b); /* <-- Ye sahi line hai */
+
+            }
+        }
+
+        // --- PRANK LOGIC ---
+        let clicks = 0;
+        const btn = document.getElementById('partyBtn');
+        const btnArea = document.getElementById('btnArea');
+
+        function tryClick() {
+            clicks++;
+            const maxClicks = 5;
+
+            if (clicks < maxClicks) {
+                const areaWidth = btnArea.clientWidth;
+                const areaHeight = btnArea.clientHeight;
+                const randomX = Math.random() * (areaWidth - 150) - (areaWidth/2 - 75); 
+                const randomY = Math.random() * (areaHeight - 50) - (areaHeight/2);
+                btn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+                
+                const colors = ['#ff0055', '#ff9900', '#ff0000', '#aa00ff'];
+                btn.style.background = colors[clicks % colors.length];
+                
+                const messages = ["Pakad ke dikha! 🏃", "Sabar kar bhai! 😂", "Abhi nahi! 🤪", "Almost there! 🤏"];
+                btn.innerText = messages[clicks % messages.length];
+                
+            } else {
+                btn.style.transform = "translate(-50%, 0)";
+                btn.style.background = "#00ff00";
+                btn.style.color = "#000";
+                btn.innerText = "OPEN GIFT 🎁";
+                btn.onclick = showPopup;
+            }
+        }
+
+        function showPopup() {
+            document.getElementById('popup').style.display = 'flex';
+            for(let i=0; i<100; i++) {
+                let c = document.createElement('div');
+                c.className = 'confetti';
+                c.style.left = Math.random()*100 + 'vw';
+                c.style.backgroundColor = ['#ffd700', '#0ff', '#ff0055', '#fff'][Math.floor(Math.random()*4)];
+                c.style.animationDuration = Math.random()*2 + 2 + 's';
+                document.body.appendChild(c);
+            }
+        }
+    </script>
+</body>
+</html>
